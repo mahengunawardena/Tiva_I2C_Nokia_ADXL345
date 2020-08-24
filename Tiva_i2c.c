@@ -107,7 +107,7 @@ void writeI2C0(uint16_t device_address, uint16_t device_register, uint8_t device
 	//specify that we want to communicate to device address with an intended write to bus
 	I2CMasterSlaveAddrSet(I2C0_BASE, device_address, false);
 
-	//register to be read
+	//register to be written to
 	I2CMasterDataPut(I2C0_BASE, device_register);
 
 	//send control byte and register address byte to slave device
@@ -116,13 +116,11 @@ void writeI2C0(uint16_t device_address, uint16_t device_register, uint8_t device
 	//wait for MCU to finish transaction
 	while(I2CMasterBusy(I2C0_BASE));
 
-	I2CMasterSlaveAddrSet(I2C0_BASE, device_address, true);
-
 	//specify data to be written to the above mentioned device_register
 	I2CMasterDataPut(I2C0_BASE, device_data);
 
 	//wait while checking for MCU to complete the transaction
-	I2CMasterControl(I2C0_BASE, I2C_MASTER_CMD_BURST_RECEIVE_FINISH);
+	I2CMasterControl(I2C0_BASE, I2C_MASTER_CMD_BURST_SEND_FINISH);
 
 	//wait for MCU & device to complete transaction
 	while(I2CMasterBusy(I2C0_BASE));
